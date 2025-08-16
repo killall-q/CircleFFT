@@ -1,13 +1,13 @@
 function Initialize()
-  mFFT = {}
+  mFFT = {} -- array of FFT measures
   bands = tonumber(SKIN:GetVariable('Bands')) -- number of FFT bands
   dispR = tonumber(SKIN:GetVariable('DispR')) -- half of display width
   local travel = tonumber(SKIN:GetVariable('Travel')) -- percentage length of travel range, a cylinder circumscribing render sphere
   travelLen = math.sin(travel * math.pi / 2) * 2
-  concavity = tonumber(SKIN:GetVariable('Concavity')) -- percentage concavity of travel range
+  concavity = tonumber(SKIN:GetVariable('Concavity')) -- percentage concavity added to travel range
   local r = { Min = tonumber(SKIN:GetVariable('RadiusMin')), Max = tonumber(SKIN:GetVariable('RadiusMax')) }
-  rMin = math.cos(travel * math.pi / 2) * r.Min
-  rRange = math.cos(travel * math.pi / 2) * r.Max - rMin
+  rMin = math.cos(travel * math.pi / 2) * r.Min -- minimum radius
+  rRange = math.cos(travel * math.pi / 2) * r.Max - rMin -- range of radius
   theta = tonumber(SKIN:GetVariable('Theta')) -- pitch angle
   phi = tonumber(SKIN:GetVariable('Phi')) -- roll angle
   color = { SetColor(nil, SKIN:GetVariable('Color1')), SetColor(nil, SKIN:GetVariable('Color2')) }
@@ -19,7 +19,7 @@ function Initialize()
     return
   end
   for b = 0, bands - 1 do
-    mFFT[b] = SKIN:GetMeasure('mFFT'..b)
+    mFFT[b + 1] = SKIN:GetMeasure('mFFT'..b)
   end
   os.remove(SKIN:GetVariable('@')..'Measures.inc')
   SetChannel(SKIN:GetVariable('Channel'))
@@ -32,7 +32,7 @@ end
 function Update()
   local sinTheta, cosTheta, sinPhi, cosPhi, degPhi, circle = math.sin(theta), math.cos(theta), math.sin(phi), math.cos(phi), math.deg(phi), {}
   for b = 1, bands do
-    local FFT = mFFT[b - 1]:GetValue()
+    local FFT = mFFT[b]:GetValue()
     local r = (bands - b - 1) / (bands - 1) * rRange + rMin
     local axialPos = (FFT - 0.5) * (travelLen + math.cos(r * 1.5708) * concavity)
     -- Find distance of circle center from POV using law of cosines
@@ -50,12 +50,12 @@ end
 
 function Pitch(n, reset)
   theta = reset and 0 or math.floor((theta + n) % 6.3 * 10 + 0.5) * 0.1
-  SKIN:Bang('!WriteKeyValue Variables Theta '..theta..' "#@#Settings.inc"')
+  SKIN:Bang('[!SetOption Theta Text '..theta..'][!WriteKeyValue Variables Theta '..theta..' "#@#Settings.inc"]')
 end
 
 function Roll(n, reset)
   phi = reset and 0 or math.floor((phi + n) % 6.3 * 10 + 0.5) * 0.1
-  SKIN:Bang('!WriteKeyValue Variables Phi '..phi..' "#@#Settings.inc"')
+  SKIN:Bang('[!SetOption Phi Text '..phi..'][!WriteKeyValue Variables Phi '..phi..' "#@#Settings.inc"]')
 end
 
 function Scale(n)
