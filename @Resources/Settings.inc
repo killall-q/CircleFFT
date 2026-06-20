@@ -1,5 +1,5 @@
 [Variables]
-Attack=200
+Attack=100
 Decay=200
 Sens=60
 Filter=1
@@ -9,7 +9,7 @@ DispR=300
 Travel=0.1
 Concavity=1
 RadiusMin=0
-RadiusMax=0.8
+RadiusMax=0.85
 Theta=0.8
 Phi=1
 Thick=3

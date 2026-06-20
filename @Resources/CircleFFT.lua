@@ -44,7 +44,7 @@ function Update()
   table.sort(circle, function(c, d) return c[1] < d[1] end)
   for b = 1, bands do
     local val = isAxial and b / bands or circle[b][3] / bands
-    SKIN:Bang('!SetOption Render Shape'..(0 < cosTheta and b + 1 or bands - b + 2)..' "Ellipse '..circle[b][4]..','..circle[b][5]..','..circle[b][6]..','..circle[b][7]..'|Rotate '..degPhi..'|Extend Attr|Stroke Color '..BlendColor(circle[b][2] < 0.1 and (1 - (1 - circle[b][2] * 10)^2) * val or val)..'"')
+    SKIN:Bang('!SetOption', 'Render', 'Shape'..(0 < cosTheta and b + 1 or bands - b + 2), 'Ellipse '..circle[b][4]..','..circle[b][5]..','..circle[b][6]..','..circle[b][7]..'|Rotate '..degPhi..'|Extend Attr|Stroke Color '..BlendColor(circle[b][2] < 0.1 and (1 - (1 - circle[b][2] * 10)^2) * val or val))
   end
 end
 
